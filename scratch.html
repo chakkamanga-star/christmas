@@ -492,6 +492,11 @@ const studentNames = {
       "Christmas is doing a little something extra for someone. Your kindness and thoughtfulness make the world a better place!",
       "The magic of Christmas never ends, and its greatest gifts are family and friends. May this season bring you closer to those you love!"
     ];
+// Block going back to previous page
+history.pushState(null, "", location.href);
+window.addEventListener("popstate", function () {
+  history.pushState(null, "", location.href);
+});
 
     // Create animated background elements
     function createSnowflakes() {
