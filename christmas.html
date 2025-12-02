@@ -436,27 +436,45 @@
       return localStorage.getItem(USED_KEY_PREFIX + id) === 'true';
     }
 
-    function renderStudents() {
-      const listEl = document.getElementById('studentList');
-      listEl.innerHTML = '';
+    // REPLACE the current renderStudents() in christmas.html with this
+function renderStudents() {
+  const listEl = document.getElementById('studentList');
+  listEl.innerHTML = '';
 
-      students.forEach(student => {
-        const used = hasUsed(student.id);
+  // global-done flag and which id was opened on this device
+  const done = localStorage.getItem('christmas_friend_done') === 'true';
+  const openedId = localStorage.getItem('christmas_friend_opened');
 
-        const a = document.createElement('a');
-        a.className = 'student' + (used ? ' disabled' : '');
-        a.textContent = student.name;
+  students.forEach(student => {
+    const used = hasUsed(student.id);
 
-        if (!used) {
-          a.href = 'scratch.html?student=' + encodeURIComponent(student.id);
-        } else {
-          a.href = 'javascript:void(0)';
-          a.title = 'Already opened';
-        }
+    // If done === true, lock everything (but we'll mark which one they opened).
+    // If done === false, behave as before (each name individually disabled if used).
+    const disabled = done ? true : used;
 
-        listEl.appendChild(a);
-      });
+    const a = document.createElement('a');
+    a.className = 'student' + (disabled ? ' disabled' : '');
+    
+    // If this is the one they opened, show it clearly
+    if (openedId && student.id === openedId) {
+      a.textContent = student.name + ' — (Your pick)';
+      a.href = 'javascript:void(0)';
+      a.title = 'You already revealed this friend.';
+      // keep 'disabled' styling so it's clearly not clickable
+    } else {
+      a.textContent = student.name;
+      if (!disabled) {
+        a.href = 'scratch.html?student=' + encodeURIComponent(student.id);
+      } else {
+        a.href = 'javascript:void(0)';
+        a.title = 'Locked';
+      }
     }
+
+    listEl.appendChild(a);
+  });
+}
+
 
     renderStudents();
   </script>
