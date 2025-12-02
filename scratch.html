@@ -551,10 +551,7 @@ window.addEventListener("popstate", function () {
       content.innerHTML = '<div class="error">' + message + '</div>';
     }
 
-    function showError(message) {
-      const content = document.getElementById('content');
-      content.innerHTML = '<div class="error">' + message + '</div>';
-    }
+    
 
     function getRandomQuote() {
       return christmasQuotes[Math.floor(Math.random() * christmasQuotes.length)];
@@ -652,10 +649,21 @@ window.addEventListener("popstate", function () {
         return;
       }
 
-      if (hasUsed(studentId)) {
-        showError('🎄 You have already opened your Christmas friend on this device.<br><br>Remember: the magic of Christmas is in the surprise! You can only reveal your friend once.');
-        return;
-      }
+      // block if this device already opened ANY friend (and it's not this same link)
+const done = localStorage.getItem('christmas_friend_done') === 'true';
+const openedId = localStorage.getItem('christmas_friend_opened');
+
+if (done && openedId !== studentId) {
+  showError('🎄 You have already opened one Christmas friend on this device. You can only reveal one friend.');
+  return;
+}
+
+// also keep the per-id used check (for safety / backwards compatibility)
+if (hasUsed(studentId)) {
+  showError('🎄 You have already opened this link on this device.');
+  return;
+}
+
 
       const friendName = assignments[studentId];
       const studentName = studentNames[studentId];
