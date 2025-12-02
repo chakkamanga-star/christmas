@@ -536,7 +536,19 @@ window.addEventListener("popstate", function () {
     }
 
     function markUsed(id) {
+      // mark this specific student as used (keeps old behavior)
       localStorage.setItem(USED_KEY_PREFIX + id, 'true');
+
+      // NEW: record that this device/user has already opened one friend
+      localStorage.setItem('christmas_friend_done', 'true');
+
+      // NEW: remember which student id this user opened
+      localStorage.setItem('christmas_friend_opened', id);
+    }
+
+    function showError(message) {
+      const content = document.getElementById('content');
+      content.innerHTML = '<div class="error">' + message + '</div>';
     }
 
     function showError(message) {
